@@ -1,5 +1,4 @@
-#loading the package for getting data from URL
-library(Rcurl)
+require(RCurl)
 
 # create data frame
 customer_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM customers"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
@@ -69,6 +68,8 @@ shipped_bytitle$ORDER_DATE <- as.Date(shipped_bytitle$ORDER_DATE, format="%Y-%m-
 shipped_bytitle$SHIPPED_DATE <- as.Date(shipped_bytitle$SHIPPED_DATE, format="%Y-%m-%d")
 
 ggplot(shipped_bytitle, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(color=TITLE)) + facet_wrap(~CUSTOMER_STATE)
+
+
 
 #create new subset   ORDER_DATE - SHIPPED_DATE - ARTIST - CUSTOMER_STATE
 shipped_byartist <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "ARTIST", "CUSTOMER_STATE")]
