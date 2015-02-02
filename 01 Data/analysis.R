@@ -1,5 +1,7 @@
 require(RCurl)
 
+require(ggplot2)
+
 # create data frame
 customer_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM customers"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
 
@@ -30,20 +32,33 @@ items_df[[2]]
 ggplot(customer_df, aes(x = CUSTOMER_STATE, y = CUSTOMER_CITY)) + geom_point() 
 
 #items_df
-ggplot(items_df, aes(x = UNIT_PRICE, y = TITLE)) + geom_point()
+#ggplot(items_df, aes(x = UNIT_PRICE, y = TITLE)) + geom_point()
 
-ggplot(items_df, aes(x = ARTIST, y = TITLE)) + geom_point()
+#ggplot(items_df, aes(x = ARTIST, y = TITLE)) + geom_point()
+
+ggplot(items_df, aes(x = ARTIST, y = UNIT_PRICE)) + geom_point()
 
 #order_details_df 
 #count of each items ordered (name of items are unknown)
 ggplot(order_details_df) + geom_histogram(aes(x = ITEM_ID), binwidth = 1, colour = "purple", fill = "white" )
 
 # How many different items ordered by each Order_ID 
-ggplot(order_details_df, aes(x = ORDER_ID, y = ITEM_ID)) + geom_point()
+#ggplot(order_details_df, aes(x = ORDER_ID, y = ITEM_ID)) + geom_point()
 
 #orders_df 
 #no need aes(color=CUSTOMER_ID ) because each customer_id is unique, non-continuous
+head(orders_df)
 ggplot(orders_df, aes(x = CUSTOMER_ID, y = ORDER_ID)) + geom_point() + facet_wrap(~CUSTOMER_ID)
+
+
+#orsh_customerID <- orders_df[,c("ORDER_DATE", "SHIPPED_DATE", "CUSTOMER_ID")]
+#orsh_customerID$ORDER_DATE <- as.Date(orsh_customerID$ORDER_DATE, format="%Y-%m-%d")
+#orsh_customerID$SHIPPED_DATE <- as.Date(orsh_customerID$SHIPPED_DATE, format="%Y-%m-%d")
+#head(orsh_customerID)
+
+#ggplot(orsh_customerID, aes(x = ORDER_DATE, y = SHIPPED_DATE)) + geom_point() + facet_wrap(~CUSTOMER_ID)
+
+
 
 
 # Create a data frame for the entire data set.

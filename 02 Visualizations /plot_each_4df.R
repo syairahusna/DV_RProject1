@@ -1,4 +1,4 @@
-source("../01 Data/created_dataframe.R", echo = TRUE)
+source("/Users/syairah/DataVisualization/DV_RProject1/01 Data/created_dataframe.R", echo = TRUE)
 
 #produce plot for each data frame
 
@@ -20,3 +20,6 @@ ggplot(order_details_df, aes(x = ORDER_ID, y = ITEM_ID)) + geom_point()
 #orders_df 
 #no need aes(color=CUSTOMER_ID ) because each customer_id is unique, non-continuous
 ggplot(orders_df, aes(x = CUSTOMER_ID, y = ORDER_ID)) + geom_point() + facet_wrap(~CUSTOMER_ID)
+
+
+
