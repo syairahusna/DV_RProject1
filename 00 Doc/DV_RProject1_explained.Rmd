@@ -1,7 +1,7 @@
 ---
 title: "CS 329E Data Visualization R Project 1"
 author: "Syairah Ridzuan, Madeline Packard, Arthur DeVitalis"
-date: "February 1, 2015"
+date: "February 3, 2015"
 output: html_document
 ---
 
@@ -35,13 +35,14 @@ head(orders_df)
 
 ```
 
-### The visual representation of the data frames are as follows
+### Here are some interesting visual representations that we yield from each data frame
 ```{r, echo = FALSE}
 
 require(ggplot2)
 #customer_df  - state-city relationship - Fairfield exists in IA and NJ
 ggplot(customer_df, aes(x = CUSTOMER_STATE, y = CUSTOMER_CITY)) + geom_point() 
 ```
+
 The existence of Fairfield in IA and NJ exemplifies the possibility that city and state has many-to-many relationship.
 
 
@@ -50,6 +51,7 @@ The existence of Fairfield in IA and NJ exemplifies the possibility that city an
 
 ggplot(items_df, aes(x = ARTIST, y = UNIT_PRICE)) + geom_point()
 ```
+
 It can be inferred from the graph above that the competitive unit price for artists to sell their albums falls between 16 and 17 dollars per album.
 
 
@@ -58,6 +60,7 @@ It can be inferred from the graph above that the competitive unit price for arti
 #count of each items ordered (name of items are unknown)
 ggplot(order_details_df) + geom_histogram(aes(x = ITEM_ID), binwidth = 1, colour = "purple", fill = "white" )
 ```
+
 This histograms indicates the popularity of each item sold with the quantity shown on y-axis. It can be inferred that the album with item_id 1 is the highest selling product.
 
 ```{r, echo = FALSE}
@@ -65,10 +68,14 @@ This histograms indicates the popularity of each item sold with the quantity sho
 #no need aes(color=CUSTOMER_ID ) because each customer_id is unique, non-continuous
 ggplot(orders_df, aes(x = CUSTOMER_ID, y = ORDER_ID)) + geom_point() + facet_wrap(~CUSTOMER_ID)
 ```
+
 This graph indicates the customer loyalty based on the frequency of each customer purchasing albums from this company.
 
-## When combined, the data gives us more interesting insights
-```{r}
+
+
+## When all the four data frame are combined, the data gives us more interesting insights
+
+```{r, warning=FALSE}
 library(RCurl)
 # Create a data frame for the entire data set.
 combine_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
