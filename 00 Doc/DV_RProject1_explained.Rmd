@@ -73,23 +73,47 @@ This graph indicates the customer loyalty based on the frequency of each custome
 
 
 
-## When all the four data frame are combined, the data gives us more interesting insights
+## Reproducing the graphs displayed in step 10:
+
+First, we need to combine all the data frames above. This is done by inserting the following SQL command 'select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id' inside RestfulREL call. The resulting call is as follows:
 
 ```{r, warning=FALSE}
-library(RCurl)
 # Create a data frame for the entire data set.
 combine_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
+```
 
-
+Create a subset of `combine_df` containing the following vectors: ORDER DATE, SHIPPED DATE, UNIT PRICE, CUSTOMER_STATE
+```{r, warning=FALSE}
 #create new subset   ORDER_DATE - SHIPPED_DATE - UNIT_PRICE - CUSTOMER_STATE
 shipped_byunitprice <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "UNIT_PRICE", "CUSTOMER_STATE")]
+```
+
+
+```{r, warning=FALSE}
+#view the new data frame created from the subset
+head(shipped_byunitprice)
+```
+
+Notice that in shipped_byunitprice, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time that the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE as follows:
+
+```{r, warning=FALSE}
 shipped_byunitprice$ORDER_DATE <- as.Date(shipped_byunitprice$ORDER_DATE, format="%Y-%m-%d")
 shipped_byunitprice$SHIPPED_DATE <- as.Date(shipped_byunitprice$SHIPPED_DATE, format="%Y-%m-%d")
+```
+
+Make sure that the class of UNIT_PRICE is factor. The following converts it into the type factor.
+```{r, warning=FALSE}
 shipped_byunitprice$UNIT_PRICE <- as.factor(shipped_byunitprice$UNIT_PRICE)
+```
 
+Create a visual represetation using `ggplot2` package:
+```{r, warning=FALSE}
 ggplot(shipped_byunitprice, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(color=UNIT_PRICE)) + facet_wrap(~CUSTOMER_STATE)
+```
 
+Repeat the steps to produce the latter two graphs.
 
+```{r, warning=FALSE, echo=FALSE}
 #create new subset   ORDER_DATE - SHIPPED_DATE - TITLE - CUSTOMER_STATE
 shipped_bytitle <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "TITLE", "CUSTOMER_STATE")]
 shipped_bytitle$ORDER_DATE <- as.Date(shipped_bytitle$ORDER_DATE, format="%Y-%m-%d")
@@ -109,6 +133,8 @@ ggplot(shipped_byartist, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(co
 
 
 ```
+
+VOILA!
 
 
 
