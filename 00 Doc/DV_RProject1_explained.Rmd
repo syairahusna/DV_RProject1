@@ -8,9 +8,8 @@ output: html_document
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 
-### There are four kinds of data frames pulled from the orders schema
-
-```{r}
+There are four kinds of data frames pulled from the orders schema
+```{r, message=FALSE}
 
 require(RCurl)
 
@@ -32,7 +31,6 @@ head(order_details_df)
 
 head(orders_df)
 
-
 ```
 
 ### Here are some interesting visual representations that we yield from each data frame
@@ -43,8 +41,7 @@ require(ggplot2)
 ggplot(customer_df, aes(x = CUSTOMER_STATE, y = CUSTOMER_CITY)) + geom_point() 
 ```
 
-The existence of Fairfield in IA and NJ exemplifies the possibility that city and state has many-to-many relationship.
-
+The existence of Fairfield in IA and NJ s the possibility that city and state has many-to-many relationship.
 
 ```{r, echo = FALSE}
 #items_df
@@ -53,7 +50,6 @@ ggplot(items_df, aes(x = ARTIST, y = UNIT_PRICE)) + geom_point()
 ```
 
 It can be inferred from the graph above that the competitive unit price for artists to sell their albums falls between 16 and 17 dollars per album.
-
 
 ```{r, echo = FALSE}
 #order_details_df 
@@ -94,21 +90,10 @@ shipped_byunitprice <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "UNIT_PRICE",
 head(shipped_byunitprice)
 ```
 
-Notice that in shipped_byunitprice, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time that the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE as follows:
+Notice that in `shipped_byunitprice` data frame, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time in which the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE using `as.Date` function. Then, create a visual representation using `ggplot2` package:
 
 ```{r, warning=FALSE}
-shipped_byunitprice$ORDER_DATE <- as.Date(shipped_byunitprice$ORDER_DATE, format="%Y-%m-%d")
-shipped_byunitprice$SHIPPED_DATE <- as.Date(shipped_byunitprice$SHIPPED_DATE, format="%Y-%m-%d")
-```
-
-Make sure that the class of UNIT_PRICE is factor. The following converts it into the type factor.
-```{r, warning=FALSE}
-shipped_byunitprice$UNIT_PRICE <- as.factor(shipped_byunitprice$UNIT_PRICE)
-```
-
-Create a visual represetation using `ggplot2` package:
-```{r, warning=FALSE}
-ggplot(shipped_byunitprice, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(color=UNIT_PRICE)) + facet_wrap(~CUSTOMER_STATE)
+ggplot(shipped_byunitprice, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(UNIT_PRICE))) + facet_wrap(~CUSTOMER_STATE)
 ```
 
 Repeat the steps to produce the latter two graphs.
@@ -116,26 +101,18 @@ Repeat the steps to produce the latter two graphs.
 ```{r, warning=FALSE, echo=FALSE}
 #create new subset   ORDER_DATE - SHIPPED_DATE - TITLE - CUSTOMER_STATE
 shipped_bytitle <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "TITLE", "CUSTOMER_STATE")]
-shipped_bytitle$ORDER_DATE <- as.Date(shipped_bytitle$ORDER_DATE, format="%Y-%m-%d")
-shipped_bytitle$SHIPPED_DATE <- as.Date(shipped_bytitle$SHIPPED_DATE, format="%Y-%m-%d")
 
-ggplot(shipped_bytitle, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(color=TITLE)) + facet_wrap(~CUSTOMER_STATE)
+ggplot(shipped_bytitle, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(TITLE))) + facet_wrap(~CUSTOMER_STATE)
 
+```
 
-
+```{r, warning=FALSE, echo=FALSE}
 #create new subset   ORDER_DATE - SHIPPED_DATE - ARTIST - CUSTOMER_STATE
 shipped_byartist <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "ARTIST", "CUSTOMER_STATE")]
-shipped_byartist$ORDER_DATE <- as.Date(shipped_byartist$ORDER_DATE, format="%Y-%m-%d")
-shipped_byartist$SHIPPED_DATE <- as.Date(shipped_byartist$SHIPPED_DATE, format="%Y-%m-%d")
-class(shipped_byartist$ARTIST)
 
-ggplot(shipped_byartist, aes(x=ORDER_DATE, y= SHIPPED_DATE)) + geom_point(aes(color=ARTIST)) + facet_wrap(~CUSTOMER_STATE)
-
+ggplot(shipped_byartist, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(ARTIST))) + facet_wrap(~CUSTOMER_STATE)
 
 ```
 
 VOILA!
 
-
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
