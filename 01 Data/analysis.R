@@ -1,5 +1,4 @@
 require(RCurl)
-
 require(ggplot2)
 
 # create data frame

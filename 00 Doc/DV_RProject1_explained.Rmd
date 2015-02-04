@@ -9,110 +9,113 @@ In this project, we will go through the steps necessary to reproduce visualizati
 
 ### Pulling Data Frames
 Here, we pull four different data frames from the given orders schema. Notice how each data frame is saved, and then called with the head() command.
+
 ```{r, message=FALSE}
+source("../01 Data/created_dataframe.R", echo = TRUE)
+```
 
-require(RCurl)
-
-# create data frame
-customer_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM customers"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
-
-items_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM items"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
-
-order_details_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM order_details"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
-
-orders_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="SELECT * FROM orders"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
-
+```{r, message=FALSE}
 head(customer_df)
+```
 
+```{r, message=FALSE}
 head(items_df)
+```
 
+```{r, message=FALSE}
 head(order_details_df)
+```
 
+```{r, message=FALSE}
 head(orders_df)
-
 ```
 
 ### Visual Representations
-We can use ggplot to display the dataframes in a visual.
-```{r, echo = FALSE}
+We can use ggplot to display the dataframes in various kinds of visualizations. 
 
-require(ggplot2)
-#customer_df  - state-city relationship - Fairfield exists in IA and NJ
-ggplot(customer_df, aes(x = CUSTOMER_STATE, y = CUSTOMER_CITY)) + geom_point() 
+```{r, message=FALSE}
+getwd()
+#source("../02 Visualizations/customerdf_plot.R", echo = TRUE)
+```
+
+```{r}
+source("../02 Visualizations/customerdf_plot.R", echo = TRUE)
 ```
 
 This graph displays the possibility that city and state has many-to-many relationship due to the existence of Fairfield in both IA and NJ.  
 
-```{r, echo = FALSE}
-#items_df
-
-ggplot(items_df, aes(x = ARTIST, y = UNIT_PRICE)) + geom_point()
+```{r}
+source("../02 Visualizations/itemsdf_plot.R", echo = TRUE)
 ```
 
 From this graph, it can be inferred that the competitive unit price for artists to sell their albums falls between 16 and 17 dollars per album.
 
-```{r, echo = FALSE}
-#order_details_df 
-#count of each items ordered (name of items are unknown)
-ggplot(order_details_df) + geom_histogram(aes(x = ITEM_ID), binwidth = 1, colour = "purple", fill = "white" )
+```{r}
+source("../02 Visualizations/orderdetailsdf_plot.R", echo = TRUE)
 ```
 
 This histogram indicates the popularity of each item sold with the quantity shown on y-axis. It can be inferred that the album with item_id 1 is the highest selling product.
 
-```{r, echo = FALSE}
-#orders_df 
-#no need aes(color=CUSTOMER_ID ) because each customer_id is unique, non-continuous
-ggplot(orders_df, aes(x = CUSTOMER_ID, y = ORDER_ID)) + geom_point() + facet_wrap(~CUSTOMER_ID)
+```{r}
+source("../02 Visualizations/ordersdf_plot.R", echo = TRUE)
 ```
 
 This graph indicates the customer loyalty based on the frequency of each customer purchasing albums from this company.
 
 
-
 ## Reproducing the graphs displayed in step 10:
 
 First, we need to combine all the data frames above. This is done by inserting the following SQL command 'select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id' inside RestfulREL call. The resulting call is as follows:
-
+  
 ```{r, warning=FALSE}
-# Create a data frame for the entire data set.
-combine_df <- data.frame(eval(parse(text=substring(getURL(URLencode('http://129.152.144.84:5001/rest/native/?query="select * from orders o join customers c on o.customer_id = c.customer_id join order_details d on o.order_id = d.order_id join items i on d.item_id = i.item_id"'), httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDB1.usuniversi01134.oraclecloud.internal', USER='DV_ORDERS', PASS='orcl', MODE='native_mode', MODEL='model', returnFor = 'R', returnDimensions = 'False'), verbose = TRUE), 1, 2^31-1))))
+source("../01 Data/allcombine_df.R", echo = TRUE)
 ```
 
 Create a subset of `combine_df` containing the following vectors: ORDER DATE, SHIPPED DATE, UNIT PRICE, CUSTOMER_STATE
 ```{r, warning=FALSE}
-#create new subset   ORDER_DATE - SHIPPED_DATE - UNIT_PRICE - CUSTOMER_STATE
-shipped_byunitprice <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "UNIT_PRICE", "CUSTOMER_STATE")]
+source("../01 Data/subset_unitprice.R", echo = TRUE)
 ```
-
 
 ```{r, warning=FALSE}
 #view the new data frame created from the subset
 head(shipped_byunitprice)
 ```
 
-Notice that in `shipped_byunitprice` data frame, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time in which the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE using `as.Date` function. Then, create a visual representation using `ggplot2` package:
+Notice that in `shipped_byunitprice` data frame, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time in which the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE using `as.Date` function. This can be done when creating a visual representation using `ggplot2` package:
 
 ```{r, warning=FALSE}
-ggplot(shipped_byunitprice, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(UNIT_PRICE))) + facet_wrap(~CUSTOMER_STATE)
+source("../02 Visualizations/shipped_byunitprice.R", echo = TRUE)
 ```
 
 Repeat the steps to produce the latter two graphs.
 
 ```{r, warning=FALSE, echo=FALSE}
-#create new subset   ORDER_DATE - SHIPPED_DATE - TITLE - CUSTOMER_STATE
-shipped_bytitle <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "TITLE", "CUSTOMER_STATE")]
-
-ggplot(shipped_bytitle, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(TITLE))) + facet_wrap(~CUSTOMER_STATE)
-
+source("../01 Data/subset_title.R", echo = TRUE)
 ```
 
 ```{r, warning=FALSE, echo=FALSE}
-#create new subset   ORDER_DATE - SHIPPED_DATE - ARTIST - CUSTOMER_STATE
-shipped_byartist <- combine_df[,c("ORDER_DATE", "SHIPPED_DATE", "ARTIST", "CUSTOMER_STATE")]
-
-ggplot(shipped_byartist, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(ARTIST))) + facet_wrap(~CUSTOMER_STATE)
-
+head(shipped_bytitle)
 ```
 
-VOILA!
+```{r, warning=FALSE, echo=FALSE}
+source("../02 Visualizations/shipped_bytitle.R", echo = TRUE)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+source("../01 Data/subset_artist.R", echo = TRUE)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+head(shipped_byartist)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+source("../02 Visualizations/shipped_byartist.R", echo = TRUE)
+```
+
+
+
+
+
+
 

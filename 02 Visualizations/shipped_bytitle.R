@@ -1,0 +1,1 @@
+ggplot(shipped_bytitle, aes(x=as.Date(ORDER_DATE, "%Y-%m-%d"), y= as.Date(SHIPPED_DATE, "%Y-%m-%d"))) + geom_point(aes(color=as.factor(TITLE))) + facet_wrap(~CUSTOMER_STATE)
