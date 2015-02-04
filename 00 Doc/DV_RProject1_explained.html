@@ -133,7 +133,7 @@ img {
 </div>
 <div id="visual-representations" class="section level3">
 <h3>Visual Representations</h3>
-<p>We can use ggplot to display the dataframes in a visual.</p>
+<p>We can use ggplot to display the dataframes in various kinds of visualizations.</p>
 <pre class="r"><code>getwd()</code></pre>
 <pre><code>## [1] &quot;/Users/syairah/DataVisualization/DV_RProject1/00 Doc&quot;</code></pre>
 <pre class="r"><code>#source(&quot;../02 Visualizations/customerdf_plot.R&quot;, echo = TRUE)</code></pre>
@@ -192,7 +192,7 @@ head(shipped_byunitprice)</code></pre>
 ## 4 2014-08-02 00:00:00                null         17             CA
 ## 5 2012-12-28 00:00:00 2013-01-07 00:00:00         17             CA
 ## 6 2014-07-21 00:00:00 2014-07-28 00:00:00         17             AZ</code></pre>
-<p>Notice that in <code>shipped_byunitprice</code> data frame, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time in which the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE using <code>as.Date</code> function. Then, create a visual representation using <code>ggplot2</code> package:</p>
+<p>Notice that in <code>shipped_byunitprice</code> data frame, ORDER DATE and SHIPPED DATE contain details that we do not need to create the graph, which are the time of order as well as the time in which the item got shipped. In order to eliminate these details, reformat ORDER DATE and SHIPPED DATE using <code>as.Date</code> function. This can be done when creating a visual representation using <code>ggplot2</code> package:</p>
 <pre class="r"><code>source(&quot;../02 Visualizations/shipped_byunitprice.R&quot;, echo = TRUE)</code></pre>
 <pre><code>## 
 ## &gt; ggplot(shipped_byunitprice, aes(x = as.Date(ORDER_DATE, 
