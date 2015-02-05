@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="Syairah Ridzuan, Madeline Packard, Arthur DeVitalis" />
+<meta name="author" content="Nur Syairah Mohd Ridzuan, Madeline Packard, Arthur DeVitalis" />
 
 
 <title>CS 329E Data Visualization R Project 1</title>
@@ -62,15 +62,15 @@ img {
 
 <div id="header">
 <h1 class="title">CS 329E Data Visualization R Project 1</h1>
-<h4 class="author"><em>Syairah Ridzuan, Madeline Packard, Arthur DeVitalis</em></h4>
-<h4 class="date"><em>February 3, 2015</em></h4>
+<h4 class="author"><em>Nur Syairah Mohd Ridzuan, Madeline Packard, Arthur DeVitalis</em></h4>
+<h4 class="date"><em>February 4th, 2015</em></h4>
 </div>
 
 
 <p>In this project, we will go through the steps necessary to reproduce visualizations from data frames pulled from Oracle.</p>
 <div id="pulling-data-frames" class="section level3">
 <h3>Pulling Data Frames</h3>
-<p>Here, we pull four different data frames from the given orders schema. Notice how each data frame is saved, and then called with the head() command.</p>
+<p>Here, we pull four different data frames from the given orders schema. Notice how each data frame is saved, and then called with the head() function.</p>
 <pre class="r"><code>source(&quot;../01 Data/created_dataframe.R&quot;, echo = TRUE)</code></pre>
 <pre><code>## 
 ## &gt; library(RCurl)
@@ -134,9 +134,6 @@ img {
 <div id="visual-representations" class="section level3">
 <h3>Visual Representations</h3>
 <p>We can use ggplot to display the dataframes in various kinds of visualizations.</p>
-<pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;/Users/syairah/DataVisualization/DV_RProject1/00 Doc&quot;</code></pre>
-<pre class="r"><code>#source(&quot;../02 Visualizations/customerdf_plot.R&quot;, echo = TRUE)</code></pre>
 <pre class="r"><code>source(&quot;../02 Visualizations/customerdf_plot.R&quot;, echo = TRUE)</code></pre>
 <pre><code>## 
 ## &gt; library(ggplot2)

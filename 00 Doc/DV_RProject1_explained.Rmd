@@ -1,7 +1,7 @@
 ---
 title: "CS 329E Data Visualization R Project 1"
-author: "Syairah Ridzuan, Madeline Packard, Arthur DeVitalis"
-date: "February 3, 2015"
+author: "Nur Syairah Mohd Ridzuan, Madeline Packard, Arthur DeVitalis"
+date: "February 4th, 2015"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ output: html_document
 In this project, we will go through the steps necessary to reproduce visualizations from data frames pulled from Oracle.
 
 ### Pulling Data Frames
-Here, we pull four different data frames from the given orders schema. Notice how each data frame is saved, and then called with the head() command.
+Here, we pull four different data frames from the given orders schema. Notice how each data frame is saved, and then called with the head() function.
 
 ```{r, message=FALSE}
 source("../01 Data/created_dataframe.R", echo = TRUE)
@@ -33,11 +33,6 @@ head(orders_df)
 
 ### Visual Representations
 We can use ggplot to display the dataframes in various kinds of visualizations. 
-
-```{r, message=FALSE}
-getwd()
-#source("../02 Visualizations/customerdf_plot.R", echo = TRUE)
-```
 
 ```{r}
 source("../02 Visualizations/customerdf_plot.R", echo = TRUE)
